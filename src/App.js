@@ -7,8 +7,6 @@ import {
   Link,
   useParams
 } from 'react-router-dom';
-import Home from './component/Home';
-import About from './component/About';
 
 import Search from './components/Search/Search.js';
 import Gallery from  './components/Gallery/Gallery.js';
