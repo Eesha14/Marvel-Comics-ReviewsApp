@@ -1,0 +1,59 @@
+$prev_next_redius:0 3px 3px 0;
+$prev_next_border_radius: 3px 0 0 3px;
+$prev_next_hover_bg_color:rgba(0,0,0,0.8);
+$defaultColor: rgb(82,121,136);
+$bg-color: orange;
+
+
+.char-card{
+  width: 50%;
+	text-align: center;
+  a:hover {
+    background-color:transparent;
+  }
+
+.detail_img{
+  width: 300px;
+  height: 300px;
+}
+
+}
+.prev, .next {
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  transition: 0.6s ease;
+  border-radius: $prev_next_redius;
+  user-select: none;
+  width: auto;
+  margin-top: -20px;
+  padding: 15px;
+  color: $defaultColor;
+  font-weight: bold;
+  font-size: 18px;
+}
+.next {
+  right: 0;
+  border-radius:$prev_next_border_radius;
+}
+		
+.prev {
+	left: 0;
+	border-radius: $prev_next_border_radius;
+}
+.prev:hover, .next:hover {
+  background-color: $prev_next_hover_bg_color;
+}
+
+
+.ui.label.label{
+      padding: 5px;
+      margin: 3px;
+      background-color:$bg-color;
+      color: black;
+
+}
+
+Label{
+  padding:5px;
+}

@@ -1,0 +1,45 @@
+.filter {
+	background-color: black;
+	text-align: center;
+	padding: 25px;
+	border: 15px solid red;
+    box-sizing: border-box;
+    height: 75px;
+    background: black;
+    border-width: thick;
+}
+
+.filter a {
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	color: red;
+}
+
+.filter a:hover {
+	color:white;
+	border: 15px solid red;
+    box-sizing: border-box;
+	border-width: thick;
+    height: 75px;
+}
+.filter a.active {
+	background-color: white;
+	color: red;
+}
+.selectevent {
+	text-align: center;
+	color: red;
+}
+
+.ui card noCharacter:before {
+    content:     "";
+    display:     block;
+    padding-top: 100%; /* initial ratio of 1:1*/
+}
+
+.center{
+	float: left;
+	height: 200px;
+}
