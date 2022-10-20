@@ -26,8 +26,6 @@ class App extends Component {
                 </li>
               </ul> */}
            <Routes>
-                <Route exact path='/about' element={< About />}></Route>
-
                 <Route exact path="/" element={<Search />}/>
                 <Route exact path="/gallery" element={<Gallery />}/>
                 <Route exact path="/char/:id" element={<Detail />}/>
