@@ -1,0 +1,114 @@
+
+body{
+	background-color: orange;
+}
+
+.ui image header{
+	padding-top: 80px;
+}
+
+.header{
+	background-color: black;
+	height:200px;
+	text-align: center;
+}
+
+.header .center {
+	margin-top: -22px;
+	display: block;
+	margin-right: auto;
+	padding-top: 50px;
+	width: 250px;
+	margin-left: auto;
+	float: right;
+}
+
+.menu {
+		background-color: black;
+		text-align: center;
+		padding: 65px;
+		margin-top: -12%;
+		float: left;
+}
+
+.menu a:hover{
+	font-size: medium;
+	text-decoration: none;
+	border: 15px solid orange;
+    box-sizing: border-box;
+	border-width: thick;
+    height: 75px;
+}
+
+.input_text{
+	text-align: center;
+	position: relative;
+	padding: 10px;
+	display: inline-flex;
+}
+
+.input_tag_text{
+	width: 100%;
+	padding: 10px;
+	border-radius:0;
+	
+}
+
+.input_text .input_text .input_tag_text input{
+	padding-left: 20px;
+	padding: 10px;
+	border-radius:0;
+	border-color:black;
+}
+
+ul {
+	background-color:white;
+}
+
+.filter_choice{
+	text-align: center;
+	color: black;
+	margin-left: 400px;
+	padding-bottom:10px;
+	border: 15px solid black;
+    box-sizing: border-box;
+    border-width: thick;
+    height: 75px;
+    width: 500px;
+    display: inline-block;
+    font-size: larger;
+}
+
+
+html{box-sizing:border-box}*,*:before,*:after{box-sizing:inherit}
+
+
+a {
+	padding: 10px;
+	color: white;
+	text-decoration: none;
+}
+
+.ui.avatar.image, 
+.ui.avatar.image img, 
+.ui.avatar.image svg, 
+.ui.avatar.images .image, 
+.ui.avatar.images img, 
+.ui.avatar.images svg{
+	width: 6em;
+    height: 6em;
+	float: left;
+}
+
+a:hover, a.active {
+	background-color: transparent;
+	color:orange;
+}
+
+.ui.segment:last-child{
+	margin-left: 332px !important;
+	background-color: rgba(255,255,255,0.4);
+	margin:50px;
+}
+
+

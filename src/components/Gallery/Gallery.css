@@ -1,4 +1,4 @@
-.filter {
+.checkfilter {
 	background-color: black;
 	text-align: center;
 	padding: 25px;
@@ -9,7 +9,7 @@
     border-width: thick;
 }
 
-.filter a {
+.checkfilter a {
 	padding-left: 10px;
 	padding-right: 10px;
 	padding-top: 2px;
@@ -17,14 +17,14 @@
 	color: red;
 }
 
-.filter a:hover {
+.checkfilter a:hover {
 	color:white;
 	border: 15px solid red;
     box-sizing: border-box;
 	border-width: thick;
     height: 75px;
 }
-.filter a.active {
+.checkfilter a.active {
 	background-color: white;
 	color: red;
 }
@@ -36,7 +36,7 @@
 .ui card noCharacter:before {
     content:     "";
     display:     block;
-    padding-top: 100%; /* initial ratio of 1:1*/
+    padding-top: 100%; 
 }
 
 .center{

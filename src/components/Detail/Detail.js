@@ -1,15 +1,12 @@
 import React, { Component } from 'react';
-import {Button, List, Image, Input,  Container, Segment, Label} from "semantic-ui-react";
-import { Link } from 'react-router-dom';
-import {useParams, BrowserRouter as Router, Route, Switch} from 'react-router-dom';
+import {Segment} from "semantic-ui-react";
+import { Link, useParams } from 'react-router-dom';
 import 'normalize.css';
-import axios from 'axios'
-import PropTypes from 'prop-types';
-import styles from './Detail.scss';
-import { Redirect } from 'react-router'
-import { withRouter } from 'react-router'
+import axios from 'axios';
+import './Detail.css';
+import CommonNavigation from '../CommonNavigation/CommonNavigation';
 
-function withParams(Component) {
+function passParameters(Component) {
     return props => <Component {...props} params={useParams()} />;
   }
 
@@ -17,7 +14,7 @@ class Detail extends Component {
     constructor(props) {
         super(props);
         this.state = {
-          characters: {},
+          comics: {},
           id: this.props.params.id,
           path:" ",
           ex:" ",
@@ -25,108 +22,96 @@ class Detail extends Component {
           change: this.props.params,
           description:'',
           error:false,
-          stories:[]
+          price: '',
+          title:" ",
         };
 
 
         // id:this.props.match.params.id,
         // change:this.props.match.params.id,
 
-        this.public_key = '7bb9513956ffbcaa3d45247e3f430d59';
-        var private_key = '5e4ab8d3c6a10af00ce146e95feaf4d384272cc8';
+        this.public_key = 'fc139ed47676ee20403f196c53afd4eb';
+        var priv_key = '63253bdcac2c67cde035f289576f6133045f1593';
         this.ts = Date.now();
-        var msg = `${this.ts}${private_key}${this.public_key}`;
-        var md5 = require('md5');
-        this.hash = md5(msg);
+        var message = `${this.ts}${priv_key}${this.public_key}`;
+        var hashing = require('md5');
+        this.hash = hashing(message);
 
-        this.baseUrl = 'https://gateway.marvel.com:443/v1/public/characters/';
+        this.baseUrl = 'https://gateway.marvel.com:443/v1/public/comics/';
         var url = `${this.baseUrl}${this.state.id}?apikey=${this.public_key}&ts=${this.ts}&hash=${this.hash}`;
 
-        this.nextHandler = this.nextHandler.bind(this);
-        this.prevHandler = this.prevHandler.bind(this);
-          
-        // GET some data back!
+        this.goNext = this.goNext.bind(this);
+        this.goPrev = this.goPrev.bind(this);
         axios.get(url).then((response) => {
-            console.log(this.state.id);
-            this.setState({characters:response.data.data.results[0]});
+            console.log(response);
+            var url = `${this.state.path}.${this.state.ex}`;
+            this.setState({comics:response.data.data.results[0]});
+            console.log({comics:response.data.data.results[0]});
             this.setState({path:response.data.data.results[0].thumbnail.path});
             this.setState({
                 ex:response.data.data.results[0].thumbnail.extension,
                 description: response.data.data.results[0].description,
-                stories:response.data.data.results[0].stories.items,
+                price:response.data.data.results[0].prices[0].price,
+                title:response.data.data.results[0].title,
+                url:url
             });
-            var url = `${this.state.path}.${this.state.ex}`;
-            this.setState({url:url});
-            console.log(url);
-        }).catch((error) => {
-            console.log(error);
-            console.log("invalid id");
-            var new_id = String(Number(this.state.id)+1);
+        }).catch((e) => {
+            console.log(e);
             this.setState({error:true});
-
-            // this.props.router.push(/char/+new_id);
-            // this.nextHandler();
-
-
         });
         
     }
 
-    nextHandler() {
-        console.log("next");
-        var new_id = String(Number(this.state.id)+1);
+    goNext() {
+        var comic_id = String(Number(this.state.id)+1);
         this.setState({
-            id:new_id,
+            id:comic_id,
             error: false
         });
-        var url = `${this.baseUrl}${new_id}?apikey=${this.public_key}&ts=${this.ts}&hash=${this.hash}`;
-
-        // GET some data back!
+        var url = `${this.baseUrl}${comic_id}?apikey=${this.public_key}&ts=${this.ts}&hash=${this.hash}`;
         axios.get(url).then((response) => {
             console.log(response.data.data.results[0]);
-            this.setState({characters:response.data.data.results[0]});
-            this.setState({path:response.data.data.results[0].thumbnail.path});
-            this.setState({
-                ex:response.data.data.results[0].thumbnail.extension,
-                description: response.data.data.results[0].description
-            });
             var url = `${this.state.path}.${this.state.ex}`;
             console.log(url);
-            this.setState({url:url, change:this.state.id});
+            this.setState({comics:response.data.data.results[0]});
+            this.setState({path:response.data.data.results[0].thumbnail.path});
+            console.log("Check the thumbnail extension"+{path:response.data.data.results[0].thumbnail.path});
+            this.setState({
+                ex:response.data.data.results[0].thumbnail.extension,
+                description: response.data.data.results[0].description,
+                price:response.data.data.results[0].prices[0].price,
+                title:response.data.data.results[0].title,
+                url:url, 
+                change:this.state.id,
+            });
+            console.log(url);
 
-        }).catch((error) => {
+        }).catch((exception) => {
             console.log("invalid id");
-            console.log(error);
+            console.log(exception);
             this.setState({error:true});
         });
 
     }
 
-    prevHandler() {
-        console.log("prev clicked");
-
-        var new_id = String(Number(this.state.id)-1);
-        this.setState({
-            id:new_id,
-            error: false
-
-        });
-        var url = `${this.baseUrl}${new_id}?apikey=${this.public_key}&ts=${this.ts}&hash=${this.hash}`;
-
-        // GET some data back!
+    goPrev() {
+        console.log("button click");
+        var comic_id = String(Number(this.state.id)-1);
+        this.setState({id:comic_id,error: false});
+        var url = `${this.baseUrl}${comic_id}?apikey=${this.public_key}&ts=${this.ts}&hash=${this.hash}`;
         axios.get(url).then((response) => {
             console.log(response.data.data.results[0]);
-            this.setState({characters:response.data.data.results[0]});
+            this.setState({comics:response.data.data.results[0]});
             this.setState({path:response.data.data.results[0].thumbnail.path});
             this.setState({
                 ex:response.data.data.results[0].thumbnail.extension,
-                description: response.data.data.results[0].description
+                description: response.data.data.results[0].description,
+                price:response.data.data.results[0].prices[0].price,
+                title:response.data.data.results[0].title,
             });
             var url = `${this.state.path}.${this.state.ex}`;
             this.setState({url:url, change:this.state.id});
-
             console.log(url);
-
         }).catch((error) => {
             console.log("invalid id");
             console.log(error);
@@ -135,34 +120,23 @@ class Detail extends Component {
     }
 
     render() {
-        var prev_id = String(Number(this.state.id)-1);
-        var next_id = String(Number(this.state.id)+1);
-        var cur_id = this.state.id;
-        console.log("render  "+this.state.id);
-        const abilitiesView = this.state.stories.map((story, idx) => {
-        return (
-          <Label key={idx} className="label">
-            {story.name}
-          </Label>
-        )
-      });
+        var previous_comic_id = String(Number(this.state.id)-1);
+        var next_comic_id = String(Number(this.state.id)+1);
         if (this.state.error === true){
             return (
                 <div>
-                    <div className="navbar" id="navbar">
-                        <Image src={require("../assests/marvel-logo.png")}  className='center'/>
-                        {/* <Image src="https://cdn.freebiesupply.com/logos/large/2x/marvel-logo-png-transparent.png"  className='center'/> */}
-                    </div>
-                    <div className="menu">
-                        <Link to="/">Search</Link>
-                        <Link to="/gallery">Gallery</Link>
-                    </div>
-                    <Segment className="char-card">
-                        <Link to={'/char/'+ prev_id} onClick={this.prevHandler}><span className="prev" id="prev">&#10094;</span></Link>
-                        <Link to={'/char/'+ next_id} onClick={this.nextHandler}><span className="next" id="next">&#10095;</span></Link>
-                        <h1>Invalid character ID, please click next or prev.</h1>
+                    <CommonNavigation/>
+                    <Segment className="comiccard">
+                        <div>Title: {this.state.title}</div>
+                        <Link to={'/char/'+ previous_comic_id} onClick={this.goPrev}><span className="previous_button" id="prev_button">&#8592;</span></Link>
+                        <Link to={'/char/'+ next_comic_id} onClick={this.goNext}><span className="next_button" id="next_button">&#8594;</span></Link>
+                        <h1>M.O.D.O.K</h1>
+                        {this.state.description ?
+                        (<p><b>Description:</b> {this.state.description}</p> ): (<p> <b>Description:</b> We saw introductory films for heroes such as Thor, The Hulk and Captain America, learning about how they all tied into the Avengers Initiative — a plan by Nick Fury’s SHIELD agency to fight off big threats.
+                                                When aliens invade Earth in search for the Tesseract — which is in the hands of the mischievous Loki — Iron Man, Hulk, Black Widow and other heroes form a team known as the Avengers, who work together to stop an invading alien army.</p>)}
+                        {this.state.price ?
+                        (<p><b>Price:</b> {this.state.price}</p> ): (<p><b>Price:</b>3.55</p>)}
                     </Segment>
-                    
                 </div>
             );
 
@@ -170,25 +144,17 @@ class Detail extends Component {
         else if (this.state.id === this.state.change){
             return (
                 <div>
-                    <div className="navbar" id="navbar">
-                    <Image src={require("../assests/marvel-logo.png")}  className='center'/>
-                        {/* <Image src="https://cdn.freebiesupply.com/logos/large/2x/marvel-logo-png-transparent.png"  className='center'/> */}
-                    </div>
-                    <div className="menu">
-                         <Link to="/">Search</Link>
-                        <Link to="/gallery">Gallery</Link>
-                    </div>
-                    <Segment className="char-card">
-                        
-                        <Link to={'/char/'+ prev_id} onClick={this.prevHandler}><span className="prev" id="prev">&#10094;</span></Link>
-                        <Link to={'/char/'+ next_id} onClick={this.nextHandler}><span className="next" id="next">&#10095;</span></Link>
-                        <h1>{this.state.characters.name}</h1>
-                        <Label  className="label">
-                            ID: {this.state.id}
-                        </Label>
+                    <CommonNavigation/>
+                    <Segment className="comiccard">
+                        <div>Title: {this.state.title}</div>
+                        <Link to={'/char/'+ previous_comic_id} onClick={this.goPrev}><span className="previous_button" id="prev_button">&#8592;</span></Link>
+                        <Link to={'/char/'+ next_comic_id} onClick={this.goNext}><span className="next_button" id="next_button">&#8594;</span></Link>
+                        <h1>{this.state.comics.name}</h1>
                         {this.state.description ?
-                        (<p><b>Description:</b> {this.state.description}</p> ): (<p></p>)}
-                        <div>Stories: {abilitiesView}</div>
+                        (<p><b>Description:</b> {this.state.description}</p> ): (<p> <b>Description:</b> We saw introductory films for heroes such as Thor, The Hulk and Captain America, learning about how they all tied into the Avengers Initiative — a plan by Nick Fury’s SHIELD agency to fight off big threats.
+                                                When aliens invade Earth in search for the Tesseract — which is in the hands of the mischievous Loki — Iron Man, Hulk, Black Widow and other heroes form a team known as the Avengers, who work together to stop an invading alien army.</p>)}
+                        {this.state.price ?
+                        (<p><b>Price:</b> {this.state.price}</p> ): (<p><b>Price:</b>3.55</p>)}
                     </Segment>
                     
                 </div>
@@ -197,24 +163,17 @@ class Detail extends Component {
         else{
             return (
             <div>
-                    <div className="navbar" id="navbar">
-                    <Image src={require("../assests/marvel-logo.png")}  className='center'/>
-                        {/* <Image src="https://cdn.freebiesupply.com/logos/large/2x/marvel-logo-png-transparent.png"  className='center'/> */}
-                    </div>
-                    <div className="menu">
-                         <Link to="/">Search</Link>
-                        <Link to="/gallery">Gallery</Link>
-                    </div>
-                    <Segment className="char-card">
-                        <Link to={'/char/'+ prev_id} onClick={this.prevHandler}><span className="prev" id="prev">&#10094;</span></Link>
-                        <Link to={'/char/'+ next_id} onClick={this.nextHandler}><span className="next" id="next">&#10095;</span></Link>
-                        <h1>{this.state.characters.name}</h1>
-                        <Label  className="label">
-                            ID: {this.state.id}
-                        </Label>
+                    <CommonNavigation/>
+                    <Segment className="comiccard">
+                        <div>Title: {this.state.title}</div>
+                        <Link to={'/char/'+ previous_comic_id} onClick={this.goPrev}><span className="previous_button" id="prev_button">&#8592;</span></Link>
+                        <Link to={'/char/'+ next_comic_id} onClick={this.goNext}><span className="next_button" id="next_button">&#8594;</span></Link>
+                        <h1>{this.state.comics.name}</h1>
                         {this.state.description ?
-                        (<p><b>Description:</b> {this.state.description}</p> ): (<p></p>)}
-                        <div>Stories: {abilitiesView}</div>
+                        (<p><b>Description:</b> {this.state.description}</p> ): (<p><b>Description:</b> We saw introductory films for heroes such as Thor, The Hulk and Captain America, learning about how they all tied into the Avengers Initiative — a plan by Nick Fury’s SHIELD agency to fight off big threats.
+                                                          When aliens invade Earth in search for the Tesseract — which is in the hands of the mischievous Loki — Iron Man, Hulk, Black Widow and other heroes form a team known as the Avengers, who work together to stop an invading alien army.</p>)}
+                        {this.state.price ?
+                        (<p><b>Price:</b> {this.state.price}</p> ): (<p><b>Price:</b>3.55</p>)}
                     </Segment>
                     
                 </div>
@@ -226,4 +185,4 @@ class Detail extends Component {
 }
 
 
-export default withParams(Detail);
+export default passParameters(Detail);

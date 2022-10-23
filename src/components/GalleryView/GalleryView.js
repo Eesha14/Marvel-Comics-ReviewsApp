@@ -1,35 +1,32 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Image, Card} from 'semantic-ui-react'
+import { Image} from 'semantic-ui-react'
 import Grid from '@mui/material/Grid';
-import styles from './GalleryView.scss'
+import './GalleryView.css'
 import { Link } from 'react-router-dom';
 
 
 class GalleryView extends Component {
   render() {
-    const noCharacter = Object.entries(this.props.characters).length === 0
-      && this.props.characters.constructor === Object;
+    const none_char = Object.entries(this.props.comics).length === 0
+      && this.props.comics.constructor === Object;
 
-    if (noCharacter) {
+    if (none_char) {
       return (
-        <Card className="noCharacter">
-          <h3>Keep Looking for characters...!</h3>
-        </Card>
+          <h3>Keep Looking for Characters...!</h3>
       )
     } else {
-      const characters_view = this.props.characters.results.map((character_data,idx)=>{
+      const characters_view = this.props.comics.results.map((character_data,idx)=>{
+        // console.log("g");
+        // console.log(this.props.comics.results);
           var url = `${character_data.thumbnail.path}.${character_data.thumbnail.extension}`;
-          var date = character_data.modified.substring(0,10);
           var id = character_data.id;
-          var char = `/char/${id}`;
+          var char = `/gallerychar/${id}`;
           return(
               <Grid key={idx} xs={6}>
                <Link to={char}>
                 <div>
-                  <Card className="noCharacter">
-                    <Image src={url} className='imgSize'/>
-                  </Card>
+                    <Image src={url} className='imageSize'/>
                 </div>
                 </Link>   
               </Grid>
@@ -39,7 +36,6 @@ class GalleryView extends Component {
           <Grid container spacing={1}>
             {characters_view}
           </Grid>
-        
       )
     }
   }

@@ -1,46 +1,39 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Card, Label, List, Image } from 'semantic-ui-react'
-import styles from './List.scss'
+import { Card, Image } from 'semantic-ui-react'
+import './List.css'
 import { Link } from 'react-router-dom';
 
 
 class ListView extends Component {
   render() {
-    const noCharacter = Object.entries(this.props.characters).length === 0
-      && this.props.characters.constructor === Object;
+    const no_Comics = Object.entries(this.props.comics).length === 0 && this.props.comics.constructor === Object;
 
-    if (noCharacter) {
+    if (no_Comics) {
       return (
-        <Card className="noCharacter">
-          <h3>Keep Looking for characters...!</h3>
-        </Card>
+          <h2 className="no-Comic">Are you a comic freak??</h2>
       )
     } else {
-      console.log(Object.entries(this.props.characters).length);
-      const characters_view = this.props.characters.results.map((character_data,idx)=>{
-          console.log(idx);
-          var url = `${character_data.thumbnail.path}.${character_data.thumbnail.extension}`;
-          var date = character_data.modified.substring(0,10);
-          var id = String(character_data.id);
-          var char = `/char/${id}`;
+      const comics = this.props.comics.results.map((comic_data,id_)=>{
+          var url = `${comic_data.thumbnail.path}.${comic_data.thumbnail.extension}`;
+          var char = `/char/${id_}`;
+          var volume = comic_data.issueNumber;
+          var id_ = String(comic_data.id);
           return(
-              <li className="w3-bar" key={idx}>
+              <li className="liview" key={id_}>
                   <Link to={char} className="listrow">
-                    <div className="bar-contnet">
                     <div className="avatar">
-                      <Image src={url} avatar />
-                      <span className='character_name'>{character_data.name}</span>
+                      <Image class="comicimage" src={url} avatar />
+                      <span className='comic_name'>{comic_data.title}</span>
                     </div>
-                      <div className='modified'>Changed: {date}</div>
-                  </div>
+                      <div className='volume'>Volume Number: {volume}</div>
                   </Link>
               </li>
             )
         });
       return (
-          <ul className="w3-ul w3-card-4">
-            {characters_view}
+          <ul className="listlist">
+            {comics}
           </ul>
         
       )
@@ -49,11 +42,11 @@ class ListView extends Component {
 }
 
 ListView.propTypes = {
-  count: PropTypes.number,
   limit: PropTypes.number,
   offset: PropTypes.number,
+  count: PropTypes.number,
   results: PropTypes.arrayOf(PropTypes.shape({
-      id:PropTypes.number,
+    id_:PropTypes.number,
       name:PropTypes.string,
       modified:PropTypes.string,
       thumbnail:PropTypes.shape({
@@ -63,4 +56,5 @@ ListView.propTypes = {
     })),
   total: PropTypes.number,
 }
+
 export default ListView

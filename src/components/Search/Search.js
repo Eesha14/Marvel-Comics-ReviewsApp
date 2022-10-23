@@ -1,175 +1,124 @@
 import React, { Component } from 'react';
-import {Button, List, Image, Input,  Container  } from "semantic-ui-react";
-import { Link } from 'react-router-dom';
-import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
-import styles from './Search.scss';
+import {Input} from "semantic-ui-react";
+import './Search.css';
 import ListView from '../List/List.js';
 import 'normalize.css';
 import axios from 'axios'
-import PropTypes from 'prop-types';
+import CommonNavigation from '../CommonNavigation/CommonNavigation';
 
 
-class App extends Component {
+class Search extends Component {
 
   constructor() {
     super();
 
     this.state = {
       value: '',
-      characters: {},
-      selectedOption:"name",
+      comics: {},
+      selectedOption:"title",
       selectedOrder:"Ascending",
     };
 
-    var public_key = '7bb9513956ffbcaa3d45247e3f430d59';
-    var private_key = '5e4ab8d3c6a10af00ce146e95feaf4d384272cc8';
+    var public_key = 'fc139ed47676ee20403f196c53afd4eb';
+    var priv_key = '63253bdcac2c67cde035f289576f6133045f1593';
     var ts = Date.now();
-    var msg = `${ts}${private_key}${public_key}`;
-    var md5 = require('md5');
-    var hash = md5(msg);
-    
-    this.baseUrl = `https://gateway.marvel.com/v1/public/characters?apikey=${public_key}&ts=${ts}&hash=${hash}&nameStartsWith=`;
-    this.inputChangeHandler = this.inputChangeHandler.bind(this);
-    this.clickHandler = this.clickHandler.bind(this);
-    this.handleOptionChange= this.handleOptionChange.bind(this);
-    this.handleOrderChange = this.handleOrderChange.bind(this);
+    var message = `${ts}${priv_key}${public_key}`;
+    var hashing = require('md5');
+    var hash = hashing(message);
+
+
+    this.baseUrl = `https://gateway.marvel.com:443/v1/public/comics?apikey=${public_key}&ts=${ts}&hash=${hash}&titleStartsWith=`;
+    this.orderDiff = this.orderDiff.bind(this);
+    this.inputelement = this.inputelement.bind(this);
+    this.radiocheck= this.radiocheck.bind(this);
+    this.handleOption = this.handleOption.bind(this);
   }
 
-  clickHandler() {
+  handleOption() {
     let url = `${this.baseUrl}${this.state.value}`;
-    if (this.state.selectedOption === "name"){
+    if (this.state.selectedOption === "issueNumber"){
       if(this.state.selectedOrder === "Descending"){
-        url = `${url}&orderBy=-name`;
+        url = `${url}&orderBy=-issueNumber`;
       }else{
-        url = `${url}&orderBy=name`;
+        url = `${url}&orderBy=issueNumber`;
       }
     }
-    if (this.state.selectedOption === "modified"){
+    if (this.state.selectedOption === "title"){
       if(this.state.selectedOrder === "Descending"){
-        url = `${url}&orderBy=-modified`;
+        url = `${url}&orderBy=-title`;
       }else{
-        url = `${url}&orderBy=modified`;
+        url = `${url}&orderBy=title`;
       }
     }
-    console.log('here');
-    console.log(url);
+    
     axios.get(url).then((response) => {
       console.log(response);
-
       this.setState({
-        characters: response.data.data
+        comics: response.data.data
       });
 
-    }).catch((error) => {
-      console.log(error);
+    }).catch((exception) => {
       this.setState({
-        characters:{}
+        comics:{}
       });
     });
   }
 
-  inputChangeHandler(event) {
-    this.setState({ value: event.target.value });
-    this.clickHandler();
-  }
-
-  handleOptionChange(event){
+  radiocheck(event){
     this.setState({ selectedOption: event.target.value});
     console.log(this.state.selectedOption);
     console.log(event.target.value);
-    this.clickHandler();
+    this.handleOption();
   }
 
-  handleOrderChange(event){
+  inputelement(event) {
+    this.setState({ value: event.target.value });
+    console.log(event.target.value);
+    this.handleOption();
+  }
+
+  orderDiff(event){
     this.setState({ selectedOrder: event.target.value});
-    this.clickHandler();
+    console.log(event.target.value);
+    this.handleOption();
   }
 
 
   render() {
     return (
       <div>
-        <div className="navbar" id="navbar">
-        <Image src={require("../assests/marvel-logo.png")}  className='center'/>
-          {/* <Image src="https://cdn.freebiesupply.com/logos/large/2x/marvel-logo-png-transparent.png"  className='center'/> */}
-        </div>
-        <div className="menu">
-            <Link to="/">Search</Link>
-            <Link to="/gallery">Gallery</Link>
-        </div>
-        <div className="searchbar">
-          <Input
-            onChange={this.inputChangeHandler}
-            placeholder='Search a character here'
-            value={this.state.value}
-            className="searchbar_input"
+        <CommonNavigation/>
+        <div className="input_text">
+          <Input onChange={this.inputelement} placeholder='Type the name of comic' value={this.state.value} className="input_tag_text"
           />
         </div>
 
-        <div className='radiodiv'>
+        <div className='filter_choice'>
           <form>
-              <span className="radioinput">
-                <label><input
-                  type="radio"
-                  value="name"
-                  className="form-check-input"
-                  checked={this.state.selectedOption === "name"}
-                  onChange={this.handleOptionChange}
-                  />
-                  Name
-                </label>
-              </span>
-
-              <span className="radioinput">
+            <label>
+              <input type="radio" value="comictitle" checked={this.state.selectedOption === "title"} onChange={this.radiocheck}/>Comic
+            </label>
                 <label>
-                  <input
-                    type="radio"
-                    value="modified"
-                    className="form-check-input"
-                    checked={this.state.selectedOption === "modified"}
-                    onChange={this.handleOptionChange}
-                  />
-                  Changed
+                  <input type="radio" value="issueNumber" checked={this.state.selectedOption === "issueNumber"} onChange={this.radiocheck}/>Volume
                 </label>
-              </span>
-            </form>
 
-            <form>
-              <span className="radioinput">
-                <label><input
-                  type="radio"
-                  value="Ascending"
-                  className="form-check-input"
-                  checked={this.state.selectedOrder === "Ascending"}
-                  onChange={this.handleOrderChange}
-                  />
-                  Ascending
-                </label>
-              </span>
-
-              <span className="radioinput">
-                <label>
-                  <input
-                    type="radio"
-                    value="Descending"
-                    className="form-check-input"
-                    checked={this.state.selectedOrder === "Descending"}
-                    onChange={this.handleOrderChange}
-                  />
+                <label><input type="radio" value="Ascending" checked={this.state.selectedOrder === "Ascending"} onChange={this.orderDiff}/>
                   Descending
                 </label>
-              </span>
-            </form>
+
+                <label>
+                  <input type="radio" value="Descending" checked={this.state.selectedOrder === "Descending"} onChange={this.orderDiff} />                  
+                    Ascending
+                </label>
+            </form> 
         </div>
 
         <div>
-          <Container className='listContainer'>
-              <ListView characters={this.state.characters} />
-          </Container>
+              <ListView comics={this.state.comics} />
         </div>
       </div>
     );
   }
 }
 
-export default App;
+export default Search;
