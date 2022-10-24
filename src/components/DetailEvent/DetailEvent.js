@@ -4,14 +4,14 @@ import { Link } from 'react-router-dom';
 import {useParams} from 'react-router-dom';
 import 'normalize.css';
 import axios from 'axios';
-import './Detail_Event.css';
+import './DetailEvent.css';
 import CommonNavigation from '../CommonNavigation/CommonNavigation';
 
 function passParameters(Component) {
     return props => <Component {...props} params={useParams()} />;
   }
 
-class Detail_Event extends Component {
+class DetailEvent extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -174,4 +174,4 @@ class Detail_Event extends Component {
 }
 
 
-export default passParameters(Detail_Event);
+export default passParameters(DetailEvent);
