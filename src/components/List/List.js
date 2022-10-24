@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Card, Image } from 'semantic-ui-react'
+import { Image } from 'semantic-ui-react'
 import './List.css'
 import { Link } from 'react-router-dom';
 
@@ -18,7 +18,7 @@ class ListView extends Component {
           var url = `${comic_data.thumbnail.path}.${comic_data.thumbnail.extension}`;
           var char = `/char/${id_}`;
           var volume = comic_data.issueNumber;
-          var id_ = String(comic_data.id);
+           id_ = String(comic_data.id);
           return(
               <li className="liview" key={id_}>
                   <Link to={char} className="listrow">
